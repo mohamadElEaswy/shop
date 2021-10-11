@@ -13,21 +13,45 @@ class DioHelper {
 
   static Future<Response> get({
     required String url,
-    required Map<String, dynamic> query,
-    String lang = 'ar',
-    String? token,
+    // Map<String, dynamic>? query,
+    String lang = 'en',
+    String? token = '',
   }) async {
-    dio!.options.headers = {'lang': lang, 'Authorization': token};
-    return await dio!.get(url, queryParameters: query);
+    dio!.options.headers = {
+      'Content-Type': 'application/json',
+      'lang': lang,
+      'Authorization': token,
+    };
+    return await dio!.get(url
+        // , queryParameters: query
+    );
   }
 
   static Future<Response> post({
-    required url,
+    required String url,
     required Map<String, dynamic> data,
-    String lang = 'ar',
+    String lang = 'en',
     String token = '',
   }) async {
-    dio!.options.headers = {'lang': lang, 'Authorization': token};
+    dio!.options.headers = {
+      'Content-Type': 'application/json',
+      'lang': lang,
+      'Authorization': token,
+    };
     return dio!.post(url, data: data);
+  }
+
+  static Future<Response> put({
+    required String url,
+    required Map<String, dynamic> data,
+    String lang = 'en',
+    required String token,
+  }) async {
+    dio!.options.headers = {
+      'Content-Type': 'application/json',
+      'lang': lang,
+      'Authorization': token,
+    };
+    return dio!.put(url, data: data);
   }
 }

@@ -12,7 +12,7 @@ ThemeData darkTheme = ThemeData(
   textTheme: TextTheme(
     bodyText2: TextStyle(
       color: Colors.white,
-      fontSize: 20.0,
+      fontSize: 16.0,
       fontWeight: FontWeight.bold,
     ),
   ),
@@ -25,7 +25,7 @@ ThemeData darkTheme = ThemeData(
       fontSize: 20.0,
     ),
     actionsIconTheme: IconThemeData(color: Colors.white),
-    backwardsCompatibility: false,
+    // backwardsCompatibility: false,
     systemOverlayStyle: SystemUiOverlayStyle(
       statusBarColor: Colors.black,
       statusBarIconBrightness: Brightness.light,
@@ -51,8 +51,14 @@ ThemeData lightTheme = ThemeData(
     type: BottomNavigationBarType.fixed,
     selectedItemColor: defaultColor,
   ),
-  appBarTheme: AppBarTheme(
-    backwardsCompatibility: false,
+  textTheme: TextTheme(
+    bodyText2: TextStyle(
+      fontSize: 16.0,
+      fontWeight: FontWeight.bold,
+    ),
+  ),
+  appBarTheme: AppBarTheme(iconTheme: IconThemeData(color: Colors.black),
+    // backwardsCompatibility: false,
     systemOverlayStyle: SystemUiOverlayStyle(
       statusBarColor: Colors.white,
       statusBarIconBrightness: Brightness.dark,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shop/constants/constFunctions.dart';
 import 'package:shop/layout/login/login.dart';
+import 'package:shop/network/local/cacheHelper.dart';
 import 'package:shop/themes/styles/color.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -41,7 +42,7 @@ class _BoardingScreenState extends State<BoardingScreen> {
       appBar: AppBar(
         actions: [
           TextButton(
-            onPressed: () => navigateAndRemove(context, LoginScreen()),
+            onPressed: () => submit(),
             child: Text('SKIP'),
           ),
         ],
@@ -89,7 +90,7 @@ class _BoardingScreenState extends State<BoardingScreen> {
                 FloatingActionButton(
                   onPressed: () {
                     if (isLast) {
-                      navigateAndRemove(context, LoginScreen());
+                      submit();
                     } else {
                       pageController.nextPage(
                         duration: Duration(milliseconds: 700),
@@ -105,6 +106,11 @@ class _BoardingScreenState extends State<BoardingScreen> {
         ),
       ),
     );
+  }
+  void submit(){
+     CacheHelper.sharedPreferences!.setBool('isFirst', true).then((value){
+       if(value){navigateAndRemove(context, LoginScreen());}
+     });
   }
 }
 

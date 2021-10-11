@@ -1,33 +1,32 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shop/constants/constFunctions.dart';
 import 'package:shop/layout/components/components.dart';
 import 'package:shop/layout/login/cubit/cubit.dart';
 import 'package:shop/layout/login/cubit/states.dart';
-import 'package:shop/layout/register/registerScreen.dart';
-import 'package:shop/themes/styles/color.dart';
 
-class LoginScreen extends StatelessWidget {
+class RegisterScreen extends StatelessWidget {
   var formKey = GlobalKey<FormState>();
-
+  TextEditingController nameController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<LoginCubit, LoginState>(
       listener: (context, state) {
-        if (state is LoginErrorState) {
+        if (state is RegisterErrorState) {
           print(state.error);
           defaultToast(
             msg: LoginCubit.get(context).userModel.message,
             state: toastStates.ERROR,
           );
         }
-        if (state is LoginSuccessState) {
-          if (state.userModel.status) {
+        if (state is RegisterSuccessState) {
+          if (state.userRegisterModel.status) {
             defaultToast(
-              msg: state.userModel.message,
+              msg: state.userRegisterModel.message,
               state: toastStates.SUCCESS,
             );
           }
@@ -38,18 +37,6 @@ class LoginScreen extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             title: Text('title'),
-            actions: [
-              IconButton(
-                onPressed: () {
-                  cubit.changeTheme();
-                },
-                icon: Icon(
-                  cubit.isDarkMode
-                      ? Icons.brightness_4
-                      : Icons.brightness_4_outlined,
-                ),
-              ),
-            ],
           ),
           body: Center(
             child: SingleChildScrollView(
@@ -63,9 +50,9 @@ class LoginScreen extends StatelessWidget {
                       Text(
                         'login'.toUpperCase(),
                         style: Theme.of(context).textTheme.headline4!.copyWith(
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       Text(
                         'We are trying to publish the knowledge for everyone . . . . ',
@@ -83,11 +70,34 @@ class LoginScreen extends StatelessWidget {
                         type: TextInputType.emailAddress,
                         prefixIcon: Icons.email_outlined,
                       ),
+                      SizedBox(height: 20.0),
 
-                      SizedBox(height: 30.0),
+                      defaultTextForm(
+                        onSubmit: () {},
+                        validator: (String value) {
+                          if (value.isEmpty) {
+                            return 'name is required';
+                          }
+                        },
+                        controller: nameController,
+                        fieldTitle: 'name'.toUpperCase(),
+                        type: TextInputType.name,
+                        prefixIcon: Icons.person,
+                      ),
+                      SizedBox(height: 20.0),
 
-
-
+                      defaultTextForm(
+                        onSubmit: () {},
+                        validator: (String value) {
+                          if (value.isEmpty) {
+                            return 'phone is required';
+                          }
+                        },
+                        controller: phoneController,
+                        fieldTitle: 'phone'.toUpperCase(),
+                        type: TextInputType.phone,
+                        prefixIcon: Icons.phone,
+                      ),SizedBox(height: 20.0),
                       defaultTextForm(
                         validator: (String value) {
                           if (value.isEmpty) {
@@ -98,25 +108,26 @@ class LoginScreen extends StatelessWidget {
                         fieldTitle: 'Password'.toUpperCase(),
                         type: TextInputType.number,
                         prefixIcon: Icons.lock,
-                        suffixIcon: cubit.passwordIcon,
+                        // suffixIcon: cubit.passwordIcon,
                         suffixPressed: () {
-                          cubit.changePasswordVisibility();
+                          // cubit.changePasswordVisibility();
                         },
-                        obSecure: cubit.isPassword,
+                        // obSecure: cubit.isPassword,
                         onSubmit: () async {
                           if (formKey.currentState!.validate()) {
-                            cubit.userLogin(
+                            cubit.userRegister(
                               context: context,
                               email: emailController.text,
+                              name: nameController.text,
+                              phone: phoneController.text,
                               password: passwordController.text,
                             );
                           }
                         },
                       ),
                       SizedBox(height: 30.0),
-
                       ConditionalBuilder(
-                        condition: state is! LoginLoadingState,
+                        condition: state is! RegisterLoadingState,
                         fallback: (BuildContext context) {
                           return Center(
                             child: CircularProgressIndicator(),
@@ -124,10 +135,12 @@ class LoginScreen extends StatelessWidget {
                         },
                         builder: (BuildContext context) {
                           return defaultButton(
-                            lable: 'login',
+                            lable: 'Register',
                             onPressed: () async {
                               if (formKey.currentState!.validate()) {
-                                LoginCubit.get(context).userLogin(
+                                LoginCubit.get(context).userRegister(
+                                  name: nameController.text,
+                                  phone: phoneController.text,
                                   email: emailController.text,
                                   password: passwordController.text,
                                   context: context,
@@ -136,22 +149,6 @@ class LoginScreen extends StatelessWidget {
                             },
                           );
                         },
-                      ),
-                      SizedBox(height: 30.0),
-                      Center(
-                        child: Row(mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('Do not have an account!'),SizedBox(width: 5.0),
-                            GestureDetector(
-                              onTap: () {
-                                navigateTo(context, RegisterScreen());},
-                              child: Text(
-                                'Register',
-                                style: TextStyle(color: defaultColor),
-                              ),
-                            )
-                          ],
-                        ),
                       ),
                     ],
                   ),
